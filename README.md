@@ -235,8 +235,3 @@ The fee is recorded as a separate ledger entry crediting the platform revenue ac
 
 ---
 
-## Notes
-
-- Never use float for money. All amounts use Python Decimal and PostgreSQL Numeric(10,2).
-- The fake bank is non-deterministic. It randomly settles or fails transactions after a short delay.
-- Both services must be running for deposit and withdrawal flows to complete.
