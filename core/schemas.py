@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from enum import Enum as PyEnum
 from uuid import UUID
 from decimal import Decimal
@@ -86,3 +86,38 @@ class TransactionsResponse(BaseModel):
     status :TransactionStatus
     created_at: datetime
     updated_at : datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class LedgerEntryResponse(BaseModel):
+    id: int
+    account_id: int | None
+    amount: Decimal
+    reference_id: UUID
+    direction: LedgerDirection
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class BalanceResponse(BaseModel):
+    account_id: int
+    balance: Decimal
+    model_config = ConfigDict(from_attributes=True)
+
+class AccountResponse(BaseModel):
+    id: int
+    name: SystemAccountName | None
+    user_id: int | None
+    account_type: AccountType
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class AuditLogResponse(BaseModel):
+    id: int
+    entity_type: EntityType
+    entity_id: int
+    action: Action
+    actor_type: ActorType
+    actor_id: int | None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)

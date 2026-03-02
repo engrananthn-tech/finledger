@@ -1,12 +1,25 @@
-from fastapi import FastAPI
-from routers import user, account, deposit, auth, callback, withdrawal, transfer
+from fastapi import FastAPI, Depends
+from routers import user, account, deposit, auth, callback, withdrawal, transfer, admin
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta, timezone
 from database import SessionLocal
 import models
 import schemas
+from database import get_db
+from sqlalchemy.orm import Session
+from contextlib import asynccontextmanager
+import schemas
 
 app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    db = SessionLocal()
+    seed_system_accounts(db)
+    db.close()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 def expire_pending_transactions():
     db = SessionLocal()
@@ -28,6 +41,13 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(expire_pending_transactions, 'interval', minutes=10)
 scheduler.start()
 
+def seed_system_accounts(db: Session= Depends(get_db)):
+    for name in schemas.SystemAccountName:
+        exists = db.query(models.Account).filter(models.Account.name == name).first()
+        if not exists:
+            db.add(models.Account(account_type=schemas.AccountType.system, name=name))
+    db.commit()
+
 app.include_router(user.router)
 app.include_router(account.router)
 app.include_router(deposit.router)
@@ -35,4 +55,5 @@ app.include_router(auth.router)
 app.include_router(callback.router)
 app.include_router(withdrawal.router)
 app.include_router(transfer.router)
+app.include_router(admin.router)
 
