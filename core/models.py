@@ -1,5 +1,5 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Index, UniqueConstraint, Numeric
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Index, UniqueConstraint, Numeric, Boolean
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text 
 from schemas import AccountType, TransactionStatus, LedgerDirection, TransactionType, EntityType, Action, ActorType, SystemAccountName
@@ -11,6 +11,7 @@ class User(Base):
     id=Column(Integer, primary_key=True)
     email=Column(String, nullable=False, unique=True)
     password=Column(String, nullable=False)
+    is_admin = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP(timezone = True), server_default= text('now()'))
 
 class Account(Base):
