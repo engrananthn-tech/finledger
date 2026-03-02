@@ -1,0 +1,28 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+import schemas, utils, models
+from sqlalchemy.exc import IntegrityError
+from oauth2 import get_current_user
+from database import get_db
+from sqlalchemy import func, case
+router = APIRouter(prefix="/accounts")
+
+@router.post("/")
+def create_account(payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_current_user)):
+    new = models.Account(user_id = current_user.id, account_type = payload.account_type, name = payload.name)
+    db.add(new)
+    db.flush()
+    audit = models.AuditLog(entity_type=schemas.EntityType.account, entity_id = new.id, action =schemas.Action.created, actor_type= schemas.ActorType.user, actor_id = current_user.id)
+    db.add(audit)
+    db.commit()
+    db.refresh(new)
+    return new
+
+@router.get("/{id}/balance")
+def check_balance(id:int = id, db: Session= Depends(get_db), current_user :dict =Depends(get_current_user)):
+    account = db.query(models.Account).filter(models.Account.user_id== current_user.id).filter(models.Account.id == id).first()
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    balance=  db.query(func.coalesce(func.sum(case((models.LedgerEntry.direction == schemas.LedgerDirection.credit, models.LedgerEntry.amount),(models.LedgerEntry.direction == schemas.LedgerDirection.debit, -models.LedgerEntry.amount), else_=0)),0)).filter(models.LedgerEntry.account_id == account.id).scalar()
+
+    return {"Balance":balance}
