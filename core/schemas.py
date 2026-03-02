@@ -51,8 +51,6 @@ class User(BaseModel):
 
 class Account(BaseModel):
     account_type: AccountType
-    name: SystemAccountName|None = None
-
 
 class TransferInput(BaseModel):
     idempotency_key: str
