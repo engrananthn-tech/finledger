@@ -1,7 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from enum import Enum as PyEnum
 from uuid import UUID
-
+from decimal import Decimal
+from datetime import datetime
 class TokenData(BaseModel):
     id: int
 
@@ -74,4 +75,14 @@ class BankCallbackInput(BaseModel):
     status : TransactionStatus
     secret_key: str
 
-
+class TransactionsResponse(BaseModel):
+    id:int
+    from_account_id:int|None=None
+    to_account_id:int|None=None
+    amount:int
+    fee:Decimal
+    reference_id: UUID
+    type:TransactionType 
+    status :TransactionStatus
+    created_at: datetime
+    updated_at : datetime

@@ -4,7 +4,8 @@ import schemas, utils, models
 from sqlalchemy.exc import IntegrityError
 from oauth2 import get_current_user
 from database import get_db
-from sqlalchemy import func, case
+from sqlalchemy import func, case, or_
+from typing import List
 router = APIRouter(prefix="/accounts")
 
 @router.post("/")
@@ -26,3 +27,11 @@ def check_balance(id:int = id, db: Session= Depends(get_db), current_user :dict 
     balance=  db.query(func.coalesce(func.sum(case((models.LedgerEntry.direction == schemas.LedgerDirection.credit, models.LedgerEntry.amount),(models.LedgerEntry.direction == schemas.LedgerDirection.debit, -models.LedgerEntry.amount), else_=0)),0)).filter(models.LedgerEntry.account_id == account.id).scalar()
 
     return {"Balance":balance}
+
+@router.get("/{id}/transactions", response_model=List[schemas.TransactionsResponse])
+def check_transactions(id:int = id, db: Session= Depends(get_db), current_user :dict =Depends(get_current_user)):
+    account = db.query(models.Account).filter(models.Account.user_id== current_user.id).filter(models.Account.id == id).first()
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    transactions = db.query(models.Transaction).filter(or_(models.Transaction.from_account_id == id, models.Transaction.to_account_id ==id)).order_by(models.Transaction.created_at.desc(),models.Transaction.id.desc()).all()
+    return transactions
