@@ -3,13 +3,13 @@ from sqlalchemy.orm import Session
 import schemas, utils, models
 from sqlalchemy.exc import IntegrityError
 import uuid
-from oauth2 import get_current_user
+from oauth2 import get_regular_user
 from sqlalchemy import func
 from database import get_db
 router = APIRouter(prefix="/transfers")
 
 @router.post("/")
-def transfer(input: schemas.TransferInput, db: Session= Depends(get_db), current_user: dict = Depends(get_current_user)):
+def transfer(input: schemas.TransferInput, db: Session= Depends(get_db), current_user: dict = Depends(get_regular_user)):
     if input.from_account_id is None:
         accounts = db.query(models.Account).filter(models.Account.user_id == current_user.id).all()
         if not accounts:

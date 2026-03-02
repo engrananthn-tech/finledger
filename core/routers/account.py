@@ -2,14 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 import schemas, utils, models
 from sqlalchemy.exc import IntegrityError
-from oauth2 import get_current_user
+from oauth2 import get_regular_user
 from database import get_db
 from sqlalchemy import func, case, or_
 from typing import List
 router = APIRouter(prefix="/accounts")
 
 @router.post("/")
-def create_account(payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_current_user)):
+def create_account(payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
     new = models.Account(user_id = current_user.id, account_type = payload.account_type, name = payload.name)
     db.add(new)
     db.flush()
@@ -20,7 +20,7 @@ def create_account(payload: schemas.Account, db: Session= Depends(get_db), curre
     return new
 
 @router.get("/{id}/balance")
-def check_balance(id:int = id, db: Session= Depends(get_db), current_user :dict =Depends(get_current_user)):
+def check_balance(id:int = id, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
     account = db.query(models.Account).filter(models.Account.user_id== current_user.id).filter(models.Account.id == id).first()
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
@@ -29,7 +29,7 @@ def check_balance(id:int = id, db: Session= Depends(get_db), current_user :dict 
     return {"Balance":balance}
 
 @router.get("/{id}/transactions", response_model=List[schemas.TransactionsResponse])
-def check_transactions(id:int = id, db: Session= Depends(get_db), current_user :dict =Depends(get_current_user)):
+def check_transactions(id:int = id, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
     account = db.query(models.Account).filter(models.Account.user_id== current_user.id).filter(models.Account.id == id).first()
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")

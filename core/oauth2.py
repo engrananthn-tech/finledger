@@ -40,3 +40,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if not user:
         raise credentials_exception
     return user
+
+def get_regular_user(current_user = Depends(get_current_user)):
+    if current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admins cannot perform user specific actions")
+    return current_user

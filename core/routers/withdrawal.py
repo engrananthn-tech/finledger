@@ -4,7 +4,7 @@ import schemas, utils, models
 from sqlalchemy.exc import IntegrityError
 import uuid
 import httpx
-from oauth2 import get_current_user
+from oauth2 import get_regular_user
 from sqlalchemy import func
 from database import get_db
 from decimal import Decimal
@@ -12,7 +12,7 @@ from config import settings
 router = APIRouter(prefix="/withdrawals")
 
 @router.post("/")
-async def deposit(input: schemas.WithdrawalInput, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+async def deposit(input: schemas.WithdrawalInput, db: Session = Depends(get_db), current_user: dict = Depends(get_regular_user)):
     try:
         if input.account_id is None:
             accounts = db.query(models.Account).filter(models.Account.user_id == current_user.id).all()

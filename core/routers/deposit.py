@@ -4,7 +4,7 @@ import schemas, utils, models
 from sqlalchemy.exc import IntegrityError
 import uuid
 import httpx
-from oauth2 import get_current_user
+from oauth2 import get_regular_user
 from database import get_db
 from config import settings
 import traceback
@@ -12,7 +12,7 @@ import traceback
 router = APIRouter(prefix="/deposits")
 
 @router.post("/")
-async def deposit(input: schemas.DepositInput, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+async def deposit(input: schemas.DepositInput, db: Session = Depends(get_db), current_user: dict = Depends(get_regular_user)):
     
     reference_id = uuid.uuid4()    
     # try:
