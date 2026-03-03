@@ -6,7 +6,7 @@ from config import settings
 
 engine = create_engine(settings.sqlalchemy_database_url)
 SessionLocal = sessionmaker(bind = engine)
-
+print(engine.url)
 Base = declarative_base()
 
 def get_db():
