@@ -49,6 +49,14 @@ class User(BaseModel):
     email:EmailStr
     password:str
 
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
 class Account(BaseModel):
     account_type: AccountType
 
