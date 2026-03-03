@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 import schemas, models, utils, oauth2
 from database import get_db
 
-router = APIRouter(prefix= "/login", tags=['Auth'])
+router = APIRouter(prefix= "/login", tags=['Login'])
 
 @router.post("/")
 def user_login(credentials: OAuth2PasswordRequestForm = Depends(), db : Session = Depends(get_db)):

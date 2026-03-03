@@ -9,7 +9,7 @@ from database import get_db
 from fastapi import Request
 from config import settings
 
-router = APIRouter(prefix="/bank")
+router = APIRouter(prefix="/bank", tags=['Bank'])
 
 @router.post("/callback")
 async def bank_callback(payload: schemas.BankCallbackInput, db: Session = Depends(get_db)):

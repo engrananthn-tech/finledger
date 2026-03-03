@@ -6,7 +6,7 @@ from database import get_db
 from oauth2 import get_current_user
 from typing import List
 from sqlalchemy import func, case
-router = APIRouter(prefix="/admin")
+router = APIRouter(prefix="/admin", tags=['admin'])
 
 
 

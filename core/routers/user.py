@@ -4,7 +4,7 @@ import schemas, utils, models
 from sqlalchemy.exc import IntegrityError
 
 from database import get_db
-router = APIRouter(prefix="/register")
+router = APIRouter(prefix="/register",tags=['register'])
 
 @router.post("/", response_model= schemas.UserResponse)
 def create_user(user: schemas.User, db: Session= Depends(get_db)):

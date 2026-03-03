@@ -9,7 +9,7 @@ from database import get_db
 from config import settings
 import traceback
 
-router = APIRouter(prefix="/deposits")
+router = APIRouter(prefix="/deposits", tags=['Deposits'])
 
 @router.post("/")
 async def deposit(input: schemas.DepositInput, db: Session = Depends(get_db), current_user: dict = Depends(get_regular_user)):

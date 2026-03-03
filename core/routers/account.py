@@ -6,7 +6,7 @@ from oauth2 import get_regular_user
 from database import get_db
 from sqlalchemy import func, case, or_
 from typing import List
-router = APIRouter(prefix="/accounts")
+router = APIRouter(prefix="/accounts", tags=['Accounts'])
 
 @router.post("/", response_model= schemas.AccountResponse)
 def create_account(payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
