@@ -9,6 +9,7 @@ from database import get_db
 from sqlalchemy.orm import Session
 from contextlib import asynccontextmanager
 import schemas
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
@@ -48,6 +49,22 @@ def seed_system_accounts(db: Session= Depends(get_db)):
         if not exists:
             db.add(models.Account(account_type=schemas.AccountType.system, name=name))
     db.commit()
+
+@app.get("/", response_class=HTMLResponse)
+def home():
+    return """
+    <html>
+        <head><title>API Server</title></head>
+        <body>
+            <h1>Backend Running</h1>
+            <p>If you're a developer:
+Open /docs to explore and test the API.<p>
+
+<p>If you're reviewing the project:
+See the GitHub repository for architecture and implementation details.</p>
+        </body>
+    </html>
+    """
 
 app.include_router(user.router)
 app.include_router(account.router)
