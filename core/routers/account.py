@@ -8,9 +8,10 @@ from sqlalchemy import func, case, or_
 from typing import List
 router = APIRouter(prefix="/accounts")
 
-@router.post("/")
+@router.post("/", response_model= schemas.AccountResponse)
 def create_account(payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
-    new = models.Account(user_id = current_user.id, account_type = payload.account_type, name = payload.name)
+    print("hello")
+    new = models.Account(user_id = current_user.id, account_type = payload.account_type)
     db.add(new)
     db.flush()
     audit = models.AuditLog(entity_type=schemas.EntityType.account, entity_id = new.id, action =schemas.Action.created, actor_type= schemas.ActorType.user, actor_id = current_user.id)

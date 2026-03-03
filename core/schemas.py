@@ -60,6 +60,14 @@ class UserResponse(BaseModel):
 class Account(BaseModel):
     account_type: AccountType
 
+class AccountResponse(BaseModel):
+    id: int
+    account_type: AccountType
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
 class TransferInput(BaseModel):
     idempotency_key: str
     from_account_id: int|None=None
@@ -108,14 +116,6 @@ class BalanceResponse(BaseModel):
     balance: Decimal
     model_config = ConfigDict(from_attributes=True)
 
-class AccountResponse(BaseModel):
-    id: int
-    name: SystemAccountName | None
-    user_id: int | None
-    account_type: AccountType
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
 
 class AuditLogResponse(BaseModel):
     id: int
