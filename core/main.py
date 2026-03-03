@@ -62,7 +62,7 @@ Open /docs to explore and test the API.<p>
 
 <p>If you're reviewing the project:
 See the GitHub repository for architecture and implementation details.</p>
-<p><a href="https://github.com/engrananthn-tech/finledger">Git hub repo<a>
+<p><a href="https://github.com/engrananthn-tech/finledger">Git hub repo<a><p>
         </body>
     </html>
     """
