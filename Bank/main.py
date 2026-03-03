@@ -25,7 +25,7 @@ async def bank_deposit(input: schemas.TransferInput, db: Session = Depends(get_d
     print("hi")
     async with httpx.AsyncClient() as client:
             await client.post(
-                "http://127.0.0.1:8001/bank/callback",
+                "https://finance-ledger-uux3.onrender.com/bank/callback",
                 json={"reference_id": str(input.reference_id), "status": status.value, "secret_key": settings.BANK_WEBHOOK_SECRET}
             )
 
@@ -45,7 +45,7 @@ async def bank_withdraw(input: schemas.TransferInput, db: Session = Depends(get_
     db.commit()
     async with httpx.AsyncClient() as client:
             await client.post(
-                "http://127.0.0.1:8001/bank/callback",
+                "https://finance-ledger-uux3.onrender.com/bank/callback",
                 json={"reference_id": str(input.reference_id), "status": status.value, "secret_key": settings.BANK_WEBHOOK_SECRET}
             )
 
