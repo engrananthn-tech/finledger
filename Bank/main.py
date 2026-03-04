@@ -13,16 +13,16 @@ async def bank_deposit(input: schemas.TransferInput, db: Session = Depends(get_d
     with db.begin():
         new = models.BankTransfer(reference_id = input.reference_id, amount= input.amount, direction=schemas.BankDirection.OUT, status=schemas.TransferStatus.pending)
         db.add(new)
-    # time.sleep(random.randint(1,30))
+    time.sleep(random.randint(1,30))
     chance = random.choice([True, False])
-    if 1:
+    if chance:
          status= schemas.TransferStatus.settled
     else:
          status= schemas.TransferStatus.failed
     transfer=db.query(models.BankTransfer).filter(models.BankTransfer.reference_id == input.reference_id).first()
     transfer.status=status
     db.commit()
-    print("hi")
+
     async with httpx.AsyncClient() as client:
             await client.post(
                 "https://finance-ledger-uux3.onrender.com/bank/callback",
@@ -35,8 +35,9 @@ async def bank_withdraw(input: schemas.TransferInput, db: Session = Depends(get_
     with db.begin():
         new = models.BankTransfer(reference_id = input.reference_id, amount= input.amount, direction=schemas.BankDirection.IN, status=schemas.TransferStatus.pending)
         db.add(new)
+        time.sleep(random.randint(1,30))
     chance = random.choice([True, False])
-    if 1:
+    if chance:
         status= schemas.TransferStatus.settled
     else:
         status= schemas.TransferStatus.failed
