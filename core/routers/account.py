@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 import schemas, models
 from oauth2 import get_regular_user
@@ -6,11 +6,13 @@ from database import get_db
 from sqlalchemy import func, case, or_
 from typing import List
 from limiter import limiter
+
 router = APIRouter(prefix="/accounts", tags=['Accounts'])
 
-@limiter.limit("5/minute")
+
 @router.post("/", response_model= schemas.AccountResponse)
-def create_account(payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
+@limiter.limit("5/minute")
+def create_account(request: Request, payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
 
     new = models.Account(user_id = current_user.id, account_type = payload.account_type)
     db.add(new)

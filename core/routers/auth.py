@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 import models, utils, oauth2
@@ -6,9 +6,10 @@ from database import get_db
 from limiter import limiter
 router = APIRouter(prefix= "/login", tags=['Login'])
 
-@limiter.limit("5/minute")
+
 @router.post("/")
-def user_login(credentials: OAuth2PasswordRequestForm = Depends(), db : Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def user_login(request: Request, credentials: OAuth2PasswordRequestForm = Depends(), db : Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == credentials.username).first()
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect username or password")

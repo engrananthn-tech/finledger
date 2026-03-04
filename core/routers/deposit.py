@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 import schemas, models
 from sqlalchemy.exc import IntegrityError
@@ -10,9 +10,10 @@ from config import settings
 from limiter import limiter
 router = APIRouter(prefix="/deposits", tags=['Deposits'])
 
-@limiter.limit("5/minute")
+
 @router.post("/")
-async def deposit(input: schemas.DepositInput, db: Session = Depends(get_db), current_user: dict = Depends(get_regular_user)):
+@limiter.limit("5/minute")
+async def deposit(request:Request, input: schemas.DepositInput, db: Session = Depends(get_db), current_user: dict = Depends(get_regular_user)):
     
     reference_id = uuid.uuid4()    
     try:

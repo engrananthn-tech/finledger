@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 import schemas, models
 from sqlalchemy.exc import IntegrityError
@@ -9,9 +9,10 @@ from limiter import limiter
 from database import get_db
 router = APIRouter(prefix="/transfers", tags=['Transfers'])
 
-@limiter.limit("5/minute")
+
 @router.post("/")
-def transfer(input: schemas.TransferInput, db: Session= Depends(get_db), current_user: dict = Depends(get_regular_user)):
+@limiter.limit("5/minute")
+def transfer(request: Request, input: schemas.TransferInput, db: Session= Depends(get_db), current_user: dict = Depends(get_regular_user)):
     if input.from_account_id is None:
         accounts = db.query(models.Account).filter(models.Account.user_id == current_user.id).all()
         if not accounts:
