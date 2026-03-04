@@ -1,0 +1,354 @@
+{
+  "info": {
+    "_postman_id": "93ab1dc2-28ce-49be-b8ed-8cffe0b0a612",
+    "name": "Finance ledger",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "URL", "value": "" },
+    { "key": "JWT", "value": "" },
+    { "key": "account_id", "value": "" },
+    { "key": "ref_id", "value": "" },
+    { "key": "webhook_secret", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Bank",
+      "item": [
+        {
+          "name": "Callback",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "x-webhook-secret", "value": "{{webhook_secret}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"reference_id\": \"{{ref_id}}\", \"status\": \"settled\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}bank/callback",
+              "host": ["{{URL}}bank"],
+              "path": ["callback"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bank deposit callback",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "x-webhook-secret", "value": "{{webhook_secret}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"reference_id\": \"{{ref_id}}\", \"status\": \"settled\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}bank/callback",
+              "host": ["{{URL}}bank"],
+              "path": ["callback"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bank withdrawal callback",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "x-webhook-secret", "value": "{{webhook_secret}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"reference_id\": \"{{ref_id}}\", \"status\": \"settled\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}bank/callback",
+              "host": ["{{URL}}bank"],
+              "path": ["callback"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Core",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"test@email.com\", \"password\": \"password123\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}register",
+              "host": ["{{URL}}register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"JWT\", pm.response.json().access_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "username", "value": "test@email.com", "type": "text" },
+                { "key": "password", "value": "password123", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{URL}}login",
+              "host": ["{{URL}}login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"account_id\", pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{JWT}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"account_type\": \"user\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}accounts",
+              "host": ["{{URL}}accounts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deposit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"ref_id\", pm.response.json().reference_id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{JWT}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"idempotency_key\": \"{{$randomUUID}}\", \"amount\": 100, \"account_id\": {{account_id}}}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}deposits",
+              "host": ["{{URL}}deposits"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Withdrawal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"ref_id\", pm.response.json().reference_id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{JWT}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"idempotency_key\": \"{{$randomUUID}}\", \"amount\": 50, \"from_account_id\": {{account_id}}}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}withdrawals",
+              "host": ["{{URL}}withdrawals"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{JWT}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"idempotency_key\": \"{{$randomUUID}}\", \"amount\": 50, \"to_account_id\": {{account_id}}}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{URL}}transfers",
+              "host": ["{{URL}}transfers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check balance",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{JWT}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}accounts/{{account_id}}/balance",
+              "host": ["{{URL}}accounts"],
+              "path": ["{{account_id}}", "balance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transactions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{JWT}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}accounts/{{account_id}}/transactions",
+              "host": ["{{URL}}accounts"],
+              "path": ["{{account_id}}", "transactions"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Admin accounts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}admin/accounts/",
+              "host": ["{{URL}}admin"],
+              "path": ["accounts", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}admin/transactions/",
+              "host": ["{{URL}}admin"],
+              "path": ["transactions", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin ledger view",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}admin/ledger",
+              "host": ["{{URL}}admin"],
+              "path": ["ledger"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin check balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}admin/accounts/{{account_id}}/balance",
+              "host": ["{{URL}}admin"],
+              "path": ["accounts", "{{account_id}}", "balance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin logs view",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}admin/auditlogs",
+              "host": ["{{URL}}admin"],
+              "path": ["auditlogs"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
