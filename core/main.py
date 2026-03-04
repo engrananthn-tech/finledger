@@ -10,8 +10,9 @@ from sqlalchemy.orm import Session
 from contextlib import asynccontextmanager
 import schemas
 from fastapi.responses import HTMLResponse
-
-app = FastAPI()
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,6 +22,10 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 def expire_pending_transactions():
     db = SessionLocal()
@@ -42,7 +47,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(expire_pending_transactions, 'interval', minutes=10)
 scheduler.start()
 
-def seed_system_accounts(db: Session= Depends(get_db)):
+def seed_system_accounts(db: Session):
     print("hi")
     for name in schemas.SystemAccountName:
         exists = db.query(models.Account).filter(models.Account.name == name).first()
