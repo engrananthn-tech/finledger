@@ -87,7 +87,6 @@ class WithdrawalInput(BaseModel):
 class BankCallbackInput(BaseModel):
     reference_id: UUID
     status : TransactionStatus
-    secret_key: str
 
 class TransactionsResponse(BaseModel):
     id:int
