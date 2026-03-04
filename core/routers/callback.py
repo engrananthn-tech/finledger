@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 import schemas, utils, models
 from sqlalchemy.exc import IntegrityError
@@ -12,9 +12,9 @@ from config import settings
 router = APIRouter(prefix="/bank", tags=['Bank'])
 
 @router.post("/callback")
-async def bank_callback(payload: schemas.BankCallbackInput, db: Session = Depends(get_db)):
+async def bank_callback(payload: schemas.BankCallbackInput, db: Session = Depends(get_db), x_webhook_secret: str = Header(None)):
     print("hello")
-    if payload.secret_key != settings.BANK_WEBHOOK_SECRET:
+    if x_webhook_secret != settings.BANK_WEBHOOK_SECRET:
         raise HTTPException(status_code=401)
     with db.begin():
         transaction =db.query(models.Transaction).filter(models.Transaction.reference_id == payload.reference_id).first() 
