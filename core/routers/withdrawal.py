@@ -63,7 +63,8 @@ async def deposit(input: schemas.WithdrawalInput, db: Session = Depends(get_db),
         async with httpx.AsyncClient() as client:
             await client.post(
                 "https://finledger-stmj.onrender.com/bank/deposits",
-                json={"reference_id": str(reference_id), "amount": str(amount), "secret_key": settings.secret_key}
+                json={"reference_id": str(reference_id), "amount": str(amount)},
+                headers={"x_webhook_secret": settings.BANK_WEBHOOK_SECRET}
             )
     except Exception:
         pass
