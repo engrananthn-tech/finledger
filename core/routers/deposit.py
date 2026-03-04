@@ -8,9 +8,10 @@ from oauth2 import get_regular_user
 from database import get_db
 from config import settings
 import traceback
-
+from main import limiter
 router = APIRouter(prefix="/deposits", tags=['Deposits'])
 
+@limiter.limit("5/minute")
 @router.post("/")
 async def deposit(input: schemas.DepositInput, db: Session = Depends(get_db), current_user: dict = Depends(get_regular_user)):
     

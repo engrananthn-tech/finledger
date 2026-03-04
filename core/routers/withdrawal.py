@@ -9,8 +9,10 @@ from sqlalchemy import func
 from database import get_db
 from decimal import Decimal
 from config import settings
+from main import limiter
 router = APIRouter(prefix="/withdrawals", tags=['Withdrawals'])
 
+@limiter.limit("5/minute")
 @router.post("/")
 async def deposit(input: schemas.WithdrawalInput, db: Session = Depends(get_db), current_user: dict = Depends(get_regular_user)):
     try:
