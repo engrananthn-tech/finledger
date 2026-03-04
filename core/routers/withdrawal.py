@@ -9,7 +9,7 @@ from sqlalchemy import func
 from database import get_db
 from decimal import Decimal
 from config import settings
-from main import limiter
+from limiter import limiter
 router = APIRouter(prefix="/withdrawals", tags=['Withdrawals'])
 
 @limiter.limit("5/minute")

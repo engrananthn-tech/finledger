@@ -6,7 +6,7 @@ from oauth2 import get_regular_user
 from database import get_db
 from sqlalchemy import func, case, or_
 from typing import List
-from main import limiter
+from limiter import limiter
 router = APIRouter(prefix="/accounts", tags=['Accounts'])
 
 @limiter.limit("5/minute")

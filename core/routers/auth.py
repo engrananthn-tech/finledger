@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 import schemas, models, utils, oauth2
 from database import get_db
-from main import limiter
+from limiter import limiter
 router = APIRouter(prefix= "/login", tags=['Login'])
 
 @limiter.limit("5/minute")

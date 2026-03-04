@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 import uuid
 from oauth2 import get_regular_user
 from sqlalchemy import func
-from main import limiter
+from limiter import limiter
 from database import get_db
 router = APIRouter(prefix="/transfers", tags=['Transfers'])
 

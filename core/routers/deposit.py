@@ -8,7 +8,7 @@ from oauth2 import get_regular_user
 from database import get_db
 from config import settings
 import traceback
-from main import limiter
+from limiter import limiter
 router = APIRouter(prefix="/deposits", tags=['Deposits'])
 
 @limiter.limit("5/minute")
