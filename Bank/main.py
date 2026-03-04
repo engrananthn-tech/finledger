@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Header
 from database import get_db
 from sqlalchemy.orm import Session
 import models, schemas
@@ -9,7 +9,7 @@ from config import settings
 app = FastAPI()
 
 @app.post("/bank/deposits")
-async def bank_deposit(input: schemas.TransferInput, db: Session = Depends(get_db)): 
+async def bank_deposit(input: schemas.TransferInput, db: Session = Depends(get_db), x_webhook_secret: str = Header(None)): 
     with db.begin():
         new = models.BankTransfer(reference_id = input.reference_id, amount= input.amount, direction=schemas.BankDirection.OUT, status=schemas.TransferStatus.pending)
         db.add(new)
@@ -26,11 +26,12 @@ async def bank_deposit(input: schemas.TransferInput, db: Session = Depends(get_d
     async with httpx.AsyncClient() as client:
             await client.post(
                 "https://finance-ledger-uux3.onrender.com/bank/callback",
-                json={"reference_id": str(input.reference_id), "status": status.value, "secret_key": settings.BANK_WEBHOOK_SECRET}
+                json={"reference_id": str(input.reference_id), "status": status.value},
+                headers={"x_webhook_secret": settings.BANK_WEBHOOK_SECRET}
             )
 
 @app.post("/bank/withdrawals")
-async def bank_withdraw(input: schemas.TransferInput, db: Session = Depends(get_db)):
+async def bank_withdraw(input: schemas.TransferInput, db: Session = Depends(get_db), x_webhook_secret: str = Header(None)):
     with db.begin():
         new = models.BankTransfer(reference_id = input.reference_id, amount= input.amount, direction=schemas.BankDirection.IN, status=schemas.TransferStatus.pending)
         db.add(new)
@@ -46,7 +47,7 @@ async def bank_withdraw(input: schemas.TransferInput, db: Session = Depends(get_
     async with httpx.AsyncClient() as client:
             await client.post(
                 "https://finance-ledger-uux3.onrender.com/bank/callback",
-                json={"reference_id": str(input.reference_id): settings.BANK_WEBHOOK_SECRET},
+                json={"reference_id": str(input.reference_id), "status":status.value},
                 headers={"x_webhook_secret": settings.BANK_WEBHOOK_SECRET}
             )
 

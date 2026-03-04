@@ -9,7 +9,6 @@ class BankDirection(PyEnum):
 class TransferInput(BaseModel):
     reference_id: UUID
     amount: Decimal
-    secret_key: str
 
 class TransferStatus(PyEnum):
     settled="settled"
