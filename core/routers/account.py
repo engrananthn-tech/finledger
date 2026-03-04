@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import schemas, utils, models
-from sqlalchemy.exc import IntegrityError
+import schemas, models
 from oauth2 import get_regular_user
 from database import get_db
 from sqlalchemy import func, case, or_

@@ -1,17 +1,15 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from routers import user, account, deposit, auth, callback, withdrawal, transfer, admin
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta, timezone
 from database import SessionLocal
 import models
 import schemas
-from database import get_db
 from sqlalchemy.orm import Session
 from contextlib import asynccontextmanager
 import schemas
 from fastapi.responses import HTMLResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from limiter import limiter
 

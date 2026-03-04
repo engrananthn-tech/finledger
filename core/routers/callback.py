@@ -1,12 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
-import schemas, utils, models
-from sqlalchemy.exc import IntegrityError
-import uuid
-import httpx
+import schemas, models
 from oauth2 import get_current_user
 from database import get_db
-from fastapi import Request
 from config import settings
 
 router = APIRouter(prefix="/bank", tags=['Bank'])

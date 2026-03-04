@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import schemas, utils, models
+import schemas, models
 from sqlalchemy.exc import IntegrityError
 import uuid
 import httpx
