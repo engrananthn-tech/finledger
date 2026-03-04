@@ -13,7 +13,6 @@ router = APIRouter(prefix="/bank", tags=['Bank'])
 
 @router.post("/callback")
 async def bank_callback(payload: schemas.BankCallbackInput, db: Session = Depends(get_db), x_webhook_secret: str = Header(None)):
-    print("hello")
     if x_webhook_secret != settings.BANK_WEBHOOK_SECRET:
         raise HTTPException(status_code=401)
     with db.begin():

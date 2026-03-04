@@ -48,7 +48,7 @@ scheduler.add_job(expire_pending_transactions, 'interval', minutes=10)
 scheduler.start()
 
 def seed_system_accounts(db: Session):
-    print("hi")
+
     for name in schemas.SystemAccountName:
         exists = db.query(models.Account).filter(models.Account.name == name).first()
         if not exists:

@@ -12,7 +12,7 @@ router = APIRouter(prefix="/accounts", tags=['Accounts'])
 @limiter.limit("5/minute")
 @router.post("/", response_model= schemas.AccountResponse)
 def create_account(payload: schemas.Account, db: Session= Depends(get_db), current_user :dict =Depends(get_regular_user)):
-    print("hello")
+
     new = models.Account(user_id = current_user.id, account_type = payload.account_type)
     db.add(new)
     db.flush()

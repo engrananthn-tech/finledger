@@ -7,7 +7,6 @@ import httpx
 from oauth2 import get_regular_user
 from database import get_db
 from config import settings
-import traceback
 from limiter import limiter
 router = APIRouter(prefix="/deposits", tags=['Deposits'])
 
@@ -51,7 +50,6 @@ async def deposit(input: schemas.DepositInput, db: Session = Depends(get_db), cu
         raise
     except Exception as e:
         db.rollback()
-        traceback.print_exc
         raise HTTPException(status_code=500, detail="An error occurred")
 
     try:
