@@ -5,9 +5,11 @@ from sqlalchemy.exc import IntegrityError
 import uuid
 from oauth2 import get_regular_user
 from sqlalchemy import func
+from main import limiter
 from database import get_db
 router = APIRouter(prefix="/transfers", tags=['Transfers'])
 
+@limiter.limit("5/minute")
 @router.post("/")
 def transfer(input: schemas.TransferInput, db: Session= Depends(get_db), current_user: dict = Depends(get_regular_user)):
     if input.from_account_id is None:
