@@ -225,13 +225,8 @@ The fee is recorded as a separate ledger entry crediting the platform revenue ac
 ## What Could Be Added
 
 - Escrow flow for marketplace payments
-- Admin endpoints to view all transactions and audit logs
-- Rate limiting on transaction endpoints
 - Webhook retry logic for failed bank requests
 - Multi-currency support
-- Transaction history with pagination
 - Email notifications on settlement or failure
-- Postman collection for testing all flows
-
 ---
 
