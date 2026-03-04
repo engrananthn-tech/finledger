@@ -197,7 +197,6 @@ Every meaningful event writes a row to the audit log:
 - Callback received (settled or failed)
 - Ledger entries written
 - Transaction expired by background job
-- Unauthorized callback attempt
 
 Each row records what happened, to which entity, who triggered it (user or system), and when.
 
@@ -217,10 +216,14 @@ The fee is recorded as a separate ledger entry crediting the platform revenue ac
 
 - user: belongs to a registered user
 - system: platform cash and revenue accounts
-- escrow: reserved for future use
-- external: reserved for future use
 
 ---
+
+## Tests added
+
+- Deposit
+- Transfer
+- Withdrawal
 
 ## What Could Be Added
 
