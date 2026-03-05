@@ -27,7 +27,7 @@ async def bank_deposit(input: schemas.TransferInput, db: Session = Depends(get_d
             await client.post(
                 "https://finance-ledger-uux3.onrender.com/bank/callback",
                 json={"reference_id": str(input.reference_id), "status": status.value},
-                headers={"x_webhook_secret": settings.BANK_WEBHOOK_SECRET}
+                headers={"x-webhook-secret": settings.BANK_WEBHOOK_SECRET}
             )
 
 @app.post("/bank/withdrawals")
@@ -49,7 +49,7 @@ async def bank_withdraw(input: schemas.TransferInput, db: Session = Depends(get_
             await client.post(
                 "https://finance-ledger-uux3.onrender.com/bank/callback",
                 json={"reference_id": str(input.reference_id), "status":status.value},
-                headers={"x_webhook_secret": settings.BANK_WEBHOOK_SECRET}
+                headers={"x-webhook-secret": settings.BANK_WEBHOOK_SECRET}
             )
 
 
