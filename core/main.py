@@ -34,7 +34,7 @@ def expire_pending_transactions():
             models.Transaction.created_at < cutoff
         ).all()
         for r in pending_transactions:
-            r.status ==schemas.TransactionStatus.failed
+            r.status = schemas.TransactionStatus.failed
             audit = models.AuditLog(entity_type=schemas.EntityType.transaction, entity_id = r.id, action =schemas.Action.expired, actor_type= schemas.ActorType.system)
             db.add(audit)
         db.commit()
