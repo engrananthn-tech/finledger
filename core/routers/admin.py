@@ -21,7 +21,7 @@ def get_all_transactions(limit: int = 20,offset: int = 0, db: Session = Depends(
 
 @router.get("/ledger", response_model=List[schemas.LedgerEntryResponse])
 def get_all_ledgerentries(limit: int = 20,offset: int = 0,db: Session = Depends(get_db), current_user: dict = Depends(get_admin_user)):
-    ledger_entries = db.query(models.LedgerEntry).order_by(models.Transaction.created_at.desc(),models.Transaction.id.desc()).offset(offset).limit(limit).all
+    ledger_entries = db.query(models.LedgerEntry).order_by(models.Transaction.created_at.desc(),models.Transaction.id.desc()).offset(offset).limit(limit).all()
     return ledger_entries
 
 @router.get("/accounts", response_model=List[schemas.AccountResponse])
