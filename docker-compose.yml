@@ -13,7 +13,7 @@ services:
 
   core:
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/finledger
+      sqlalchemy_database_url: postgresql://postgres:postgres@db:5432/finledger
     build: ./core
     ports:
       - "8000:8000"
@@ -23,7 +23,7 @@ services:
 
   bank:
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/finledger
+      sqlalchemy_database_url: postgresql://postgres:postgres@db:5432/finledger
     build: ./Bank
     ports:
       - "8001:8001"
